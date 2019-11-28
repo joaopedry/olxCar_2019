@@ -9,6 +9,8 @@
     <head>
         <?php include_once "template/header.php"; ?>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script src="js/jquery.maskMoney.js" type="text/javascript"></script>
+        <script src="js/maskMoney.js" type="text/javascript"></script>
         <title>Painel de Controle</title>
     </head>
     
@@ -26,7 +28,7 @@
                         <label>Título do Anúncio</label>
                         <input class="form-control" type="text" name="tituloAnuncio" required placeholder="Digite o Título do Anúncio">
                         <label>Marca do carro</label>
-                        <select class="form-control" name="marcaCarro" required>
+                        <select class="form-control" name="marcaCarro" required="required">
                             <option value="">Selecione:</option>
                             <?php 
                             $sql_marca = "	SELECT *  
@@ -37,9 +39,9 @@
                             <?php } ?>
                         </select>
                         <label>Modelo do carro</label>
-                        <input class="form-control" type="text" name="modeloCarro" placeholder="Digite o Modelo do Carro">
+                        <input class="form-control" type="text" name="modeloCarro" placeholder="Digite o Modelo do Carro" required="required">
                         <label>Cor do carro</label>	
-                        <select class="form-control" name="corCarro">
+                        <select class="form-control" name="corCarro" required="required">
                             <option value="">Selecione:</option>
                             <?php
                             $sql_cor = "	SELECT *  
@@ -50,9 +52,9 @@
                             <?php } ?>
                         </select>
                         <label>Ano do carro</label>
-                        <input class="form-control" type="text" placeholder="YYYY" pattern="([0-9]{4})" maxlength="4" name="anoCarro">
+                        <input class="form-control" type="text" placeholder="YYYY" pattern="([0-9]{4})" maxlength="4" name="anoCarro" required="required">
                         <label>Preço do carro</label>
-                        <input class="form-control" type="text" placeholder="Preço" maxlength="20" name="precoCarro">
+                        <input class="form-control" type="text" placeholder="Preço" pattern=".{5,15}" required title="Digite o preço corretamente" name="precoCarro" onKeyPress="return(moeda(this,'.',',',event))" required="required">
                         <label>Descrição do Anúncio</label>
                         <textarea class="form-control" type="text" name="descricaoAnuncio"></textarea><br>
                         <input class="form-control" type="submit" name="cadastrarAnuncio" value="Cadastrar!">
@@ -62,7 +64,7 @@
         </section>
     </body>
 </html>
-<script>
+<script type="text/javascript">
     function goBack() {
         window.history.back();
     }

@@ -216,6 +216,8 @@ table td button
 	border-radius:5px;
 	padding:15px;
 	background:#222d32;
+	height:85%;
+	
 }
 
 .logar h2 
@@ -228,7 +230,7 @@ table td button
 {
 	color:#fff;
 }
-
+/* 
 .logar input
 {
 	width:100%;
@@ -237,12 +239,15 @@ table td button
 	border:solid 1px #ddd;
 	height:35px;
 }
-
+*/
 .logar [type=submit]
 {
 	background:#7971ea;
 	color:#fff;
+	margin-top: 2%;
+	margin-bottom: 2%;
 }
+
 
 .Principal
 {

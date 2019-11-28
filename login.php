@@ -11,14 +11,14 @@
 
 <body>
     <div class="loginFundo">
-        <div class="logar">
+        <div class="logar" style="height:40%;">
             <h2>Acesso OLXCar</h2>
             <form id="login" method="post" action="login.php">
                 <label>Usuario</label>
-                <input required="required" type="text" name="usuario" />
+                <input class="form-control" required="required" type="text" name="usuario" />
                 <label>Senha</label>
-                <input required="required" type="password" name="senha" />
-                <input type="submit" name="logar" value="Acessar" />
+                <input class="form-control" required="required" type="password" name="senha" />
+                <input class="form-control" type="submit" name="logar" value="Acessar" />
                 <input type="button" class="form-control" value="Cadastre-se!" onclick="location.href='/teste/cadastrarUsuario.php'" />
             </form>
         </div>

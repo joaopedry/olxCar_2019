@@ -24,9 +24,10 @@
             <thead>
                 <tr>
                     <th>Título</th>
+                    <th>Vendedor</th>
                     <th>Modelo</th>
-                    <th>Marca</th>
-                    <th>Cor</th>
+                    <th>Ano</th>
+                    <th>Ação</th>
                 </tr>
             </thead>
             <?php
@@ -45,15 +46,54 @@
                                                 OR anuncios.ds_preco like '%".$nomeAnuncio."%' 
                                                 OR anuncios.ds_descricao_anuncio like '%".$nomeAnuncio."%' 
                                                 OR cores.ds_cor like '%".$nomeAnuncio."%'";
-                $resultAnuncio = selecionar($_SG["link"], $sqlPesquisaAnuncioSelect);		
+                $resultAnuncio = selecionar($_SG["link"], $sqlPesquisaAnuncioSelect);
+                //Verifica se algum registro FK foi apagado
+                if (mysqli_num_rows($resultAnuncio)==0)
+                    {
+                        $sqlPesquisaAnuncioSelect = "SELECT * FROM anuncios
+                                                INNER JOIN cores
+                                                ON anuncios.cd_cor = cores.cd_cor
+                                                INNER JOIN usuarios
+                                                ON anuncios.cd_usuario = usuarios.cd_usuario		
+                                                WHERE anuncios.ds_anuncio like '%".$nomeAnuncio."%' 
+                                                OR anuncios.ds_preco like '%".$nomeAnuncio."%' 
+                                                OR anuncios.ds_descricao_anuncio like '%".$nomeAnuncio."%' 
+                                                OR cores.ds_cor like '%".$nomeAnuncio."%'";	
+                        $resultAnuncio = selecionar($_SG["link"], $sqlPesquisaAnuncioSelect);
+                        
+                        if (mysqli_num_rows($resultAnuncio)==0)
+                        {
+                            $sqlPesquisaAnuncioSelect = "SELECT * FROM anuncios
+                                                INNER JOIN marcas
+                                                ON anuncios.cd_marca = marcas.cd_marca
+                                                INNER JOIN usuarios
+                                                ON anuncios.cd_usuario = usuarios.cd_usuario		
+                                                WHERE anuncios.ds_anuncio like '%".$nomeAnuncio."%' 
+                                                OR marcas.ds_marca like '%".$nomeAnuncio."%' 
+                                                OR anuncios.ds_preco like '%".$nomeAnuncio."%' 
+                                                OR anuncios.ds_descricao_anuncio like '%".$nomeAnuncio."%'";
+                            $resultAnuncio = selecionar($_SG["link"], $sqlPesquisaAnuncioSelect);
+                            
+                            if (mysqli_num_rows($resultAnuncio)==0)
+                            {
+                                $sqlPesquisaAnuncioSelect = "SELECT * FROM anuncios
+                                                INNER JOIN usuarios
+                                                ON anuncios.cd_usuario = usuarios.cd_usuario		
+                                                WHERE anuncios.ds_anuncio like '%".$nomeAnuncio."%'
+                                                OR anuncios.ds_preco like '%".$nomeAnuncio."%' 
+                                                OR anuncios.ds_descricao_anuncio like '%".$nomeAnuncio."%'";	
+                                $resultAnuncio = selecionar($_SG["link"], $sqlPesquisaAnuncioSelect);
+                            }
+                        }
+                    }	
                 while($selecAnuncio = mysqli_fetch_assoc($resultAnuncio)){
                 ?>
                     <tbody>
                         <tr>
                             <td><?php echo $selecAnuncio['ds_anuncio']; ?></td>
+                            <td><?php echo $selecAnuncio['ds_usuario']; ?></td>
                             <td><?php echo $selecAnuncio['ds_modelo']; ?></td>
-                            <td><?php echo $selecAnuncio['ds_marca']; ?></td>
-                            <td><?php echo $selecAnuncio['ds_cor']; ?></td>
+                            <td><?php echo $selecAnuncio['dt_ano']; ?></td>
                             <td>
                                 <input value="Exibir" type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<?php echo $selecAnuncio['cd_anuncio']; ?>"></input>
                             </td>
@@ -68,8 +108,34 @@
                                 </div>
                                 <div class="modal-body">
                                     <p>Modelo: <?php echo $selecAnuncio['ds_modelo']; ?></p>
-                                    <p>Marca: <?php echo $selecAnuncio['ds_marca']; ?></p>
-                                    <p>Cor: <?php echo $selecAnuncio['ds_cor']; ?></p>
+                                    <?php
+                                        if($selecAnuncio['cd_marca'] != null)
+                                        {
+                                    ?>
+                                        <p>Marca: <?php echo $selecAnuncio['ds_marca']; ?></p>
+                                    <?php
+                                        }
+                                        else
+                                        {
+                                    ?>
+                                            <p>Marca: Informação Indisponível</p>
+                                    <?php
+                                        }
+                                    ?>
+                                    <?php
+                                        if($selecAnuncio['cd_cor'] != null)
+                                        {
+                                    ?>
+                                        <p>Cor: <?php echo $selecAnuncio['ds_cor']; ?></p>
+                                    <?php
+                                        }
+                                        else
+                                        {
+                                    ?>
+                                            <p>Cor: Informação Indisponível</p>
+                                    <?php
+                                        }
+                                    ?>
                                     <p>Ano: <?php echo $selecAnuncio['dt_ano']; ?></p>
                                     <p>Preço: <?php echo $selecAnuncio['ds_preco']; ?></p>
                                     <p>Nome Vendedor: <?php echo $selecAnuncio['ds_usuario']; ?></p>

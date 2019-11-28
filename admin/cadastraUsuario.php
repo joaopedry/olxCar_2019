@@ -4,6 +4,16 @@
     protegePagina();
     cadastrarUsuario();
     protegePaginaADM();
+    if(isset($_GET['erro']))
+    {
+        $id=$_GET['id'];
+        if($id == 1)
+        {
+            echo '<script language="javascript">';
+            echo 'alert("Usuário está vinculado a um Estado ou Anúncio, favor verificar!!")';
+            echo '</script>';
+        }
+    }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

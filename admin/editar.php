@@ -9,6 +9,7 @@
     <head>
         <?php include_once "template/header.php"; ?>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script src="js/maskMoney.js" type="text/javascript"></script>
         <title>Painel de Controle</title>
     </head>
     
@@ -32,42 +33,107 @@
                                     WHERE cd_anuncio=".$_GET['id']." LIMIT 1";
 
                     $anuncio = selecionar($_SG["link"], $sql_select);
+                    //Verifica se algum registro FK foi apagado
+                    if (mysqli_num_rows($anuncio)==0)
+                    {
+                        $sql_select = "SELECT *
+                                        FROM `anuncios`
+                                        JOIN `marcas` on anuncios.cd_marca = marcas.cd_marca
+                                        WHERE cd_anuncio=".$_GET['id']." LIMIT 1";	
+                        $anuncio = selecionar($_SG["link"], $sql_select);
+                        
+                        if (mysqli_num_rows($anuncio)==0)
+                        {
+                            $sql_select = "SELECT *
+                                            FROM `anuncios`
+                                            JOIN `cores` on anuncios.cd_cor = cores.cd_cor 
+                                            WHERE cd_anuncio=".$_GET['id']." LIMIT 1";	
+                            $anuncio = selecionar($_SG["link"], $sql_select);
+                            
+                            if (mysqli_num_rows($anuncio)==0)
+                            {
+                                $sql_select = "SELECT *
+                                                FROM `anuncios`
+                                                WHERE cd_anuncio=".$_GET['id']." LIMIT 1";	
+                                $anuncio = selecionar($_SG["link"], $sql_select);
+                            }
+                        }
+                    }
+
                     while($selecAnuncio = mysqli_fetch_assoc($anuncio)){?>
                         <form class="form-adicionar" method="post" action="editar.php" enctype="multipart/form-data">
                             <label>Título do Anúncio</label>
                             <input class="form-control" type="text" name="tituloAnuncio" required placeholder="Digite o Título do Anúncio" value="<?php echo $selecAnuncio['ds_anuncio']; ?>">
                             <label>Marca do carro</label>
-                            <select class="form-control" name="marcaCarro" required>
+                            <select class="form-control" name="marcaCarro" required="required">
+                            <?php
+                                if($selecAnuncio['cd_marca'] != null)
+                                {
+                            ?>
                                 <option value="<?php echo $selecAnuncio['cd_marca']; ?>"><?php echo $selecAnuncio['ds_marca'];?></option>
+                            <?php
+                                }
+                                else
+                                {
+                            ?>
+                                    <option value="">Selecione:</option>
+                            <?php
+                                }
+                            ?>
                                 <?php 
                                     $sql_marca = "	SELECT *  
                                                     FROM `marcas`
                                                     WHERE cd_marca != ".$selecAnuncio['cd_marca'].";";			
-                                    $resultMarca = selecionar($_SG["link"], $sql_marca);		
+                                    $resultMarca = selecionar($_SG["link"], $sql_marca);
+                                    if (mysqli_num_rows($resultMarca)==0)
+                                    {
+                                        $sql_marca = "SELECT *  
+                                                    FROM `marcas`;";		
+                                    $resultMarca = selecionar($_SG["link"], $sql_marca);	
+                                    }			
                                     while($selecMarca = mysqli_fetch_assoc($resultMarca)){ 
                                 ?>
                                 <option value="<?php echo $selecMarca['cd_marca']; ?>"><?php echo $selecMarca['ds_marca'];?></option>
                                 <?php } ?>
                             </select>
                             <label>Modelo do carro</label>
-                            <input class="form-control" type="text" name="modeloCarro" placeholder="Digite o Modelo do Carro" value="<?php echo $selecAnuncio['ds_modelo']; ?>">
+                            <input class="form-control" type="text" name="modeloCarro" placeholder="Digite o Modelo do Carro" value="<?php echo $selecAnuncio['ds_modelo']; ?>" required="required">
                             <label>Cor do carro</label>	
-                            <select class="form-control" name="corCarro">
+                            <select class="form-control" name="corCarro" required="required">
+                            <?php
+                                if($selecAnuncio['cd_cor'] != null)
+                                {
+                            ?>
                                 <option value="<?php echo $selecAnuncio['cd_cor']; ?>"><?php echo $selecAnuncio['ds_cor'];?></option>
+                            <?php
+                                }
+                                else
+                                {
+                            ?>
+                                    <option value="">Selecione:</option>
+                            <?php
+                                }
+                            ?>
                                 <?php
                                     $sql_cor = "	SELECT *  
                                                     FROM `cores`
                                                     WHERE cd_cor != ".$selecAnuncio['cd_cor'].";";		
-                                    $resultCor = selecionar($_SG["link"], $sql_cor);		
+                                    $resultCor = selecionar($_SG["link"], $sql_cor);	
+                                    if (mysqli_num_rows($resultCor)==0)
+                                    {
+                                        $sql_cor = "SELECT *  
+                                                    FROM `cores`;";		
+                                        $resultCor = selecionar($_SG["link"], $sql_cor);	
+                                    }	
                                     while($selecCor = mysqli_fetch_assoc($resultCor)){
                                 ?>
                                 <option value="<?php echo $selecCor['cd_cor']; ?>"><?php echo $selecCor['ds_cor'];?></option>
                                 <?php } ?>
                             </select>
                             <label>Ano do carro</label>
-                            <input class="form-control" type="text" placeholder="YYYY" pattern="([0-9]{4})" maxlength="4" name="anoCarro" value="<?php echo $selecAnuncio['dt_ano']; ?>">
+                            <input class="form-control" type="text" placeholder="YYYY" pattern="([0-9]{4})" maxlength="4" name="anoCarro" value="<?php echo $selecAnuncio['dt_ano']; ?>" required="required">
                             <label>Preço do carro</label>
-                            <input class="form-control" type="text" placeholder="Preço" maxlength="20" name="precoCarro" value="<?php echo $selecAnuncio['ds_preco']; ?>">
+                            <input class="form-control" type="text" placeholder="Preço" pattern=".{5,15}" required title="Digite o preço corretamente" name="precoCarro" value="<?php echo $selecAnuncio['ds_preco']; ?>" onKeyPress="return(moeda(this,'.',',',event))" required="required">
                             <label>Descrição do Anúncio</label>
                             <textarea class="form-control" type="text" name="descricaoAnuncio"><?php echo $selecAnuncio['ds_descricao_anuncio']; ?></textarea>
                             <input type="hidden" name="cdAnuncio" value="<?php echo $selecAnuncio['cd_anuncio']; ?>" /><br />
@@ -86,6 +152,16 @@
                                     WHERE cd_usuario=".$_GET['id']." LIMIT 1";
 
                     $usuario = selecionar($_SG["link"], $sql_select);
+                    //Verifica se algum registro FK foi apagado
+                    if (mysqli_num_rows($usuario)==0)
+                    {
+                        $sql_select = "SELECT *
+                                    FROM `usuarios`
+                                    WHERE cd_usuario=".$_GET['id']." LIMIT 1";
+
+                        $usuario = selecionar($_SG["link"], $sql_select);
+                    }
+
                     while($selecUsuario = mysqli_fetch_assoc($usuario)){
                         ?>
                         <form class="form-adicionar" method="post" action="editar.php">
@@ -101,12 +177,31 @@
                             <input class="form-control" type="text" name="txtTelefone" required="required" value="<?php echo $selecUsuario['ds_telefone']; ?>" />
                             <label>Estado</label>
                             <select class="form-control" name="txtEstado" required="required" value="<?php echo $selecUsuario['ds_usuario']; ?>" >
-                                <option value="<?php echo $selecUsuario['cd_estado']; ?>"><?php echo $selecUsuario['ds_estado']; ?></option>
+                            <?php
+                                if($selecUsuario['cd_estado'] != null)
+                                {
+                            ?>
+                                    <option value="<?php echo $selecUsuario['cd_estado']; ?>"><?php echo $selecUsuario['ds_estado']; ?></option>
+                            <?php
+                                }
+                                else
+                                {
+                            ?>
+                                    <option value="">Selecione:</option>
+                            <?php
+                                }
+                            ?>
                                 <?php
                                     $sql_estado = "	SELECT *  
                                                     FROM `estados`
                                                     WHERE cd_estado != ".$selecUsuario['cd_estado'].";";		
-                                    $resultEstado = selecionar($_SG["link"], $sql_estado);		
+                                    $resultEstado = selecionar($_SG["link"], $sql_estado);	
+                                    if (mysqli_num_rows($resultEstado)==0)
+                                    {
+                                        $sql_estado = "	SELECT *  
+                                                        FROM `estados`;";		
+                                        $resultEstado = selecionar($_SG["link"], $sql_estado);	
+                                    }
                                     while($selecEstado = mysqli_fetch_assoc($resultEstado)){
                                 ?>
                                 <option value="<?php echo $selecEstado['cd_estado']; ?>"><?php echo $selecEstado['ds_estado'];?></option>

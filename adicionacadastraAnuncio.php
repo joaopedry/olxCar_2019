@@ -8,6 +8,7 @@
     <head>
         <?php include_once "template/header.php"; ?>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script src="js/maskMoney.js" type="text/javascript"></script>
         <title>Painel de Controle</title>
     </head>
     
@@ -51,7 +52,7 @@
                         <label>Ano do carro</label>
                         <input class="form-control" type="text" placeholder="YYYY" pattern=".{4,}" required title="Digite o ano corretamente" maxlength="4" name="anoCarro" required>
                         <label>Preço do carro</label>
-                        <input class="form-control" type="text" placeholder="Preço" maxlength="20" name="precoCarro" required>
+                        <input class="form-control" type="text" placeholder="Preço" pattern=".{5,15}" required title="Digite o preço corretamente" name="precoCarro" onKeyPress="return(moeda(this,'.',',',event))" required>
                         <label>Descrição do Anúncio</label>
                         <textarea class="form-control" type="text" name="descricaoAnuncio"></textarea><br>
                         <input class="form-control" type="submit" class="cadastrarAnuncio" name="cadastrarAnuncio" value="Cadastrar!">

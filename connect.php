@@ -6,7 +6,7 @@ $_SG["validaSempre"] = true;
 
 
 $_SG["servidor"] = "localhost";
-$_SG["banco"] = "webphp";
+$_SG["banco"] = "webphp5";
 $_SG["usuario"] = "root";
 $_SG["senha"] = "";
 $_SG["paginaLogin"] = "login.php";
@@ -151,10 +151,9 @@ $_SG["link"]->set_charset("utf8");
 				if (mysqli_query($_SG['link'], $sqlCadastrarInsert))
 				{
 					unset($_POST['cadastrarUsuario']);
-					echo "Usuário cadastrado com sucesso!";
-					?>
-					<a href="login.php"><input type="button" name="login" value="Login" /></a>
-					<?php
+					echo '<script language="javascript">';
+					echo 'alert("Usuário cadastrado com sucesso!")';
+					echo '</script>';
 				} 
 				else
 				{

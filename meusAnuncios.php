@@ -30,7 +30,7 @@
                             <th>Modelo</th>
                             <th>Marca</th>
                             <th>Cor</th>
-                            <th>Ano</th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
                     <?php
@@ -42,16 +42,71 @@
                                                     INNER JOIN usuarios
                                                     ON anuncios.cd_usuario = usuarios.cd_usuario		
                                                     WHERE anuncios.cd_usuario = '".$_SESSION['usuarioID']."'";
-                    $resultMeuAnuncio = selecionar($_SG["link"], $sqlBuscaMeuAnuncioSelect);		
+                    $resultMeuAnuncio = selecionar($_SG["link"], $sqlBuscaMeuAnuncioSelect);
+                    if (mysqli_num_rows($resultMeuAnuncio)==0)
+                    {
+                        $sqlBuscaMeuAnuncioSelect = "SELECT * FROM anuncios
+                                                    INNER JOIN cores
+                                                    ON anuncios.cd_cor = cores.cd_cor
+                                                    INNER JOIN usuarios
+                                                    ON anuncios.cd_usuario = usuarios.cd_usuario		
+                                                    WHERE anuncios.cd_usuario = '".$_SESSION['usuarioID']."'";	
+                        $resultMeuAnuncio = selecionar($_SG["link"], $sqlBuscaMeuAnuncioSelect);
+                        
+                        if (mysqli_num_rows($resultMeuAnuncio)==0)
+                        {
+                            $sqlBuscaMeuAnuncioSelect = "SELECT * FROM anuncios
+                                                    INNER JOIN marcas
+                                                    ON anuncios.cd_marca = marcas.cd_marca
+                                                    INNER JOIN usuarios
+                                                    ON anuncios.cd_usuario = usuarios.cd_usuario		
+                                                    WHERE anuncios.cd_usuario = '".$_SESSION['usuarioID']."'";
+                            $resultMeuAnuncio = selecionar($_SG["link"], $sqlBuscaMeuAnuncioSelect);
+                            
+                            if (mysqli_num_rows($resultMeuAnuncio)==0)
+                            {
+                                $sqlBuscaMeuAnuncioSelect = "SELECT * FROM anuncios
+                                                    INNER JOIN usuarios
+                                                    ON anuncios.cd_usuario = usuarios.cd_usuario		
+                                                    WHERE anuncios.cd_usuario = '".$_SESSION['usuarioID']."'";	
+                                $resultMeuAnuncio = selecionar($_SG["link"], $sqlBuscaMeuAnuncioSelect);
+                            }
+                        }
+                    }	
                     while($selecAnuncio = mysqli_fetch_assoc($resultMeuAnuncio)){
                     ?>
                     <tbody>
                         <tr>
                             <td><?php echo $selecAnuncio['ds_anuncio']; ?></td>
                             <td><?php echo $selecAnuncio['ds_modelo']; ?></td>
-                            <td><?php echo $selecAnuncio['ds_marca']; ?></td>
-                            <td><?php echo $selecAnuncio['ds_cor']; ?></td>
-                            <td><?php echo $selecAnuncio['dt_ano']; ?></td>
+                            <?php
+                                if($selecAnuncio['cd_marca'] != null)
+                                {
+                            ?>
+                                <td><?php echo $selecAnuncio['ds_marca']; ?></td>
+                            <?php
+                                }
+                                else
+                                {
+                            ?>
+                                    <td>Informação Indisponível</td>
+                            <?php
+                                }
+                            ?>
+                            <?php
+                                if($selecAnuncio['cd_cor'] != null)
+                                {
+                            ?>
+                                <td><?php echo $selecAnuncio['ds_cor']; ?></td>
+                            <?php
+                                }
+                                else
+                                {
+                            ?>
+                                    <td>Informação Indisponível</td>
+                            <?php
+                                }
+                            ?>
                             <td>
                                 <a class="btn btn-primary" href="editar.php?acao=AtualizarMeuAnuncio&id=<?php echo $selecAnuncio['cd_anuncio']; ?>">Editar</a>
                                 <a onClick="return ConfirmarAlteracao()" class="btn btn-secondary" href="query.php?deletarMeuAnucio&id=<?php echo $selecAnuncio['cd_anuncio']; ?>">Excluir</a>

@@ -9,6 +9,7 @@
     <head>
         <?php include_once "template/header.php"; ?>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script src="js/jquerymask.js"></script>
         <title>Painel de Controle</title>
     </head>
     
@@ -30,9 +31,9 @@
                         <label>Data Nascimento</label>
                         <input class="form-control" required="required" type="date" name="txtDtNasc" max="<?php echo date('Y-m-d'); ?>"/>
                         <label>CPF</label>
-                        <input class="form-control" required="required" type="cpf" name="txtCPF" id="txtCPF" maxlength="14"/>
-                        <label>Telefone</label>
-                        <input class="form-control" type="text" name="txtTelefone" required="required" />
+                        <input class="form-control" required="required" type="cpf" name="txtCPF" id="txtCPF" maxlength="14" id="cpf" placeholder="###.###.###-##" onkeyup="mascara('###.###.###-##',this,event,true)" pattern=".{14,}" required title="CPF Incorreto!"/>
+                        <label>Celular</label>
+                        <input class="form-control" type="text" name="txtTelefone" required="required" id="telefone" placeholder="(##) #####-####" onkeyup="mascara('(##) #####-####',this,event,true)" maxlength="15" pattern=".{15,}" required title="Telefone Incorreto!"/>
                         <label>Estado</label>
                         <select class="form-control" name="txtEstado" required="required">
                             <option value="">Selecione:</option>
@@ -45,9 +46,9 @@
                             <?php } ?>
                         </select>
                         <label>Login</label>
-                        <input class="form-control" required="required" type="text" name="txtUsuario" />
+                        <input class="form-control" required="required" type="text" name="txtUsuario" pattern=".{4,}" required title="Minimo 4 caracteres!"/>
                         <label>Senha</label>
-                        <input class="form-control" required="required" type="password" name="txtSenha" />
+                        <input class="form-control" required="required" type="password" name="txtSenha" pattern=".{6,}" required title="Minimo 6 caracteres!"/>
                         <label>Tipo do Usuário</label>
                         <select class="form-control" name="txtTipoUsuario" required="required">
                             <option value="1">Padrão</option>
