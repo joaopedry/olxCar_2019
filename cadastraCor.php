@@ -2,7 +2,7 @@
 	include_once "../connect.php";
 	include_once "../functions.php";
     protegePagina();
-    cadastrarAnuncio();
+    cadastrarCor();
     protegePaginaADM();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -20,30 +20,28 @@
 		<?php include_once "template/lateral.php"; ?>
     	<section class="conteudo">
             <div class="titulo">
-                <h1>Anúncios</h1>
-                <a href="adicionacadastraAnuncio.php"><img title="Adicionar" src="img/btn_adicionar.png"></a>
+                <h1>Cores</h1>
+                <a href="adicionacadastraCor.php"><img title="Adicionar" src="img/btn_adicionar.png"></a>
             </div>
                 <table class="ExibeForm">
                     <thead>
                         <tr>
-                            <th>Título</th>
-                            <th>Modelo</th>
-                            <th>Preço</th>
+                            <th>Código</th>
+                            <th>Cor</th>
                             <th>Ação</th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php 
-                        $sql_select = "SELECT * FROM `anuncios` ";
-                        $anuncio = selecionar($_SG["link"], $sql_select);
-                        while($selecAnuncio = mysqli_fetch_assoc($anuncio)){?>
+                        $sql_select = "SELECT * FROM `cores` ";
+                        $cor = selecionar($_SG["link"], $sql_select);
+                        while($selecCor = mysqli_fetch_assoc($cor)){?>
                         <tr>
-                            <td><?php echo $selecAnuncio['ds_anuncio']; ?></td>
-                            <td><?php echo $selecAnuncio['ds_modelo']; ?></td>
-                            <td><?php echo $selecAnuncio['ds_preco']; ?></td>
+                            <td><?php echo $selecCor['cd_cor']; ?></td>
+                            <td><?php echo $selecCor['ds_cor']; ?></td>
                             <td>
-                                <a class="btn btn-primary" href="editar.php?acao=AtualizarAnuncio&id=<?php echo $selecAnuncio['cd_anuncio']; ?>">Editar</a>
-                                <a onClick="return ConfirmarAlteracao()" class="btn btn-secondary" href="query.php?deletarAnuncio&id=<?php echo $selecAnuncio['cd_anuncio']; ?>">Excluir</a>
+                                <a class="btn btn-primary" href="editar.php?acao=AtualizarCor&id=<?php echo $selecCor['cd_cor']; ?>">Editar</a>
+                                <a onClick="return ConfirmarAlteracao()" class="btn btn-secondary" href="query.php?deletarCor&id=<?php echo $selecCor['cd_cor']; ?>">Excluir</a>
                             </td>
                         </tr>
                         <?php 
@@ -54,5 +52,5 @@
     </body>
 </html>
 <script>
-function ConfirmarAlteracao(){		if (confirm ("Deseja realmente excluir?"))		return true;	else		return false;}
+function ConfirmarAlteracao(){		if (confirm ("Deseja realmente excluir?\nCaso esta cor esteja em uso em algum anuncio, você pode perder a informação!"))		return true;	else		return false;}
 </script>
